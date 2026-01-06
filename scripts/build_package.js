@@ -29,7 +29,7 @@ if (!process.cwd().includes('packages')) {
 const packageName = basename(process.cwd());
 
 // build typescript files
-execSync('tsc --build', { stdio: 'inherit' });
+execSync('npx --no-install tsc --build', { stdio: 'inherit' });
 
 // copy .{md,json} files
 execSync('node ../../scripts/copy_files.js', { stdio: 'inherit' });

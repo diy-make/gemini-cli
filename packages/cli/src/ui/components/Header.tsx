@@ -5,7 +5,7 @@
  */
 
 import type React from 'react';
-import { Box } from 'ink';
+import { Box, Text } from 'ink';
 import { ThemedGradient } from './ThemedGradient.js';
 import { shortAsciiLogo, longAsciiLogo, tinyAsciiLogo } from './AsciiArt.js';
 import { getAsciiArtWidth } from '../utils/textUtils.js';
@@ -48,10 +48,14 @@ export const Header: React.FC<HeaderProps> = ({
       flexShrink={0}
       flexDirection="column"
     >
-      <ThemedGradient>{title}</ThemedGradient>
+      <ThemedGradient>
+        <Text>{title}</Text>
+      </ThemedGradient>
       {nightly && (
         <Box width="100%" flexDirection="row" justifyContent="flex-end">
-          <ThemedGradient>v{version}</ThemedGradient>
+          <ThemedGradient>
+            <Text>v{version}</Text>
+          </ThemedGradient>
         </Box>
       )}
     </Box>
