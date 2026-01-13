@@ -49,7 +49,7 @@ const noColorSemanticColors: SemanticColors = {
     comment: '',
     symbol: '',
     dark: '',
-    gradient: [],
+    gradient: ['#4796E4', '#847ACE', '#C3677F'],
   },
   status: {
     error: '',
