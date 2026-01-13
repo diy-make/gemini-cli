@@ -1,4 +1,38 @@
-# Gemini CLI
+# Gemini CLI (Sovereign MetaGit Fork)
+
+> [!IMPORTANT] This is a **Sovereign Fork** of the Google Gemini CLI, maintained
+> by DIY-MAKE as part of the **Sovereign Artificial Life** initiative. It has
+> been surgically modified to support the **Metagit Environment** and enforce
+> high-integrity forensic standards.
+
+## 🛰️ Sovereign Divergence
+
+While this fork inherits the core logic of the upstream Google repository, it
+implements critical architectural shifts:
+
+**1. The Metagit Feed (V8 Replay Substrate):** Includes a dedicated
+browser-based replay engine (**repos/diy-make/metagit-feed/**) that provides a
+bit-perfect, real-time mirror of terminal sessions. It utilizes a **13-Line
+Linearization Protocol** to filter transient UI noise (spinners/flicker) and
+preserve a clean forensic history.
+
+**2. Hard-Coded Safety Protocols:** The core command validation logic in
+`packages/core/src/utils/shell-permissions.ts` has been hardened with immutable
+blocks:
+
+- **Recursive Purge Block**: Commands like `rm -rf` and `rm -r` are permanently
+  denied at the source code level.
+- **Sacred Memory Protection**: Deletion of `.git` directories is physically
+  blocked to protect the firm's legislative history (Heartwood).
+
+**3. Heartwood DNA Integration:** Designed to operate as a "Object" within the
+Metagit "Field," this CLI is optimized for total ingestion of structured
+Heartwood DNA (JSON principles) at boot, ensuring cross-generational agent
+continuity.
+
+---
+
+# Gemini CLI (Original)
 
 [![Gemini CLI CI](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/ci.yml)
 [![Gemini CLI E2E (Chained)](https://github.com/google-gemini/gemini-cli/actions/workflows/chained_e2e.yml/badge.svg)](https://github.com/google-gemini/gemini-cli/actions/workflows/chained_e2e.yml)
