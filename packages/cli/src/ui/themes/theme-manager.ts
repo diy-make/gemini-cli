@@ -557,12 +557,12 @@ class ThemeManager {
       return DEFAULT_THEME;
     }
 
+    const toSlug = (name: string) => name.toLowerCase().replace(/\s+/g, '-');
+    const targetSlug = toSlug(themeName);
+
     // First check built-in themes
     const builtInTheme = this.availableThemes.find(
-      (theme) =>
-        theme.name === themeName ||
-        theme.name.toLowerCase().replace(/\s+/g, '-') ===
-          themeName?.toLowerCase(),
+      (theme) => theme.name === themeName || toSlug(theme.name) === targetSlug,
     );
     if (builtInTheme) {
       return builtInTheme;
@@ -573,16 +573,14 @@ class ThemeManager {
       return this.loadThemeFromFile(themeName);
     }
 
-    if (this.settingsThemes.has(themeName)) {
-      return this.settingsThemes.get(themeName);
-    }
-
-    if (this.extensionThemes.has(themeName)) {
-      return this.extensionThemes.get(themeName);
-    }
-
-    if (this.fileThemes.has(themeName)) {
-      return this.fileThemes.get(themeName);
+    // [SOVEREIGN-SLUG-LOOKUP] Multi-map discovery with slug fallback
+    const allCustomMaps = [this.settingsThemes, this.extensionThemes, this.fileThemes];
+    
+    for (const map of allCustomMaps) {
+        if (map.has(themeName)) return map.get(themeName);
+        for (const [name, theme] of map.entries()) {
+            if (toSlug(name) === targetSlug) return theme;
+        }
     }
 
     // If it's not a built-in, not in cache, and not a valid file path,
