@@ -296,10 +296,7 @@ export function ThemeDialog({
 
                   return (
                     <Text color={titleColor} wrap="truncate" key={item.key}>
-                      {themeNamePart}{' '}
-                      <Text color={theme.text.secondary}>
-                        {item.themeTypeDisplay}
-                      </Text>
+                      {themeNamePart}
                       {itemWithExtras.themeMatch && (
                         <Text color={theme.status.success}>
                           {itemWithExtras.themeMatch}

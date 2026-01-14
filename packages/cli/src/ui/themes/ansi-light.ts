@@ -27,7 +27,7 @@ const ansiLightColors: ColorsTheme = {
 };
 
 export const ANSILight: Theme = new Theme(
-  'ansi-light',
+  'ANSI Light',
   'light',
   {
     hljs: {

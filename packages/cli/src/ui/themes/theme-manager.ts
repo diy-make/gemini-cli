@@ -559,7 +559,10 @@ class ThemeManager {
 
     // First check built-in themes
     const builtInTheme = this.availableThemes.find(
-      (theme) => theme.name === themeName,
+      (theme) =>
+        theme.name === themeName ||
+        theme.name.toLowerCase().replace(/\s+/g, '-') ===
+          themeName?.toLowerCase(),
     );
     if (builtInTheme) {
       return builtInTheme;
