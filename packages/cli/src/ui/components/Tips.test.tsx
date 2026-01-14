@@ -13,6 +13,6 @@ describe('Tips', () => {
     const { lastFrame } = render(<Tips />);
     const output = lastFrame();
     expect(output).toContain('Get started by typing:');
-    expect(output).toContain('"read and do README.ai"');
+    expect(output).toContain('"do readme.ai"');
   });
 });
