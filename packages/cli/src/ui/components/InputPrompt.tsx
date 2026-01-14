@@ -39,7 +39,12 @@ import { useKeypress } from '../hooks/useKeypress.js';
 import { keyMatchers, Command } from '../keyMatchers.js';
 import type { CommandContext, SlashCommand } from '../commands/types.js';
 import type { Config } from '@google/gemini-cli-core';
-import { ApprovalMode, coreEvents, debugLogger } from '@google/gemini-cli-core';
+import {
+  ApprovalMode,
+  debugLogger,
+  coreEvents,
+  CoreEvent,
+} from '@google/gemini-cli-core';
 import {
   parseInputForHighlighting,
   parseSegmentsFromTokens,
@@ -341,6 +346,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
       // Clear the buffer *before* calling onSubmit to prevent potential re-submission
       // if onSubmit triggers a re-render while the buffer still holds the old value.
       buffer.setText('');
+      coreEvents.emit(CoreEvent.BrowserInput, { text: submittedValue });
       onSubmit(processedValue);
       resetCompletionState();
       resetReverseSearchCompletionState();
