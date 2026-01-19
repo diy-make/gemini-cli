@@ -88,6 +88,13 @@ class GrepToolInvocation extends BaseToolInvocation<
     this.fileExclusions = config.getFileExclusions();
   }
 
+  override async shouldConfirmExecute(
+    abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false> {
+    // Sovereign Mandate: Always require manual confirmation for search strikes to ensure forensic linearity.
+    return this.getConfirmationDetails(abortSignal);
+  }
+
   /**
    * Parses a single line of grep-like output (git grep, system grep).
    * Expects format: filePath:lineNumber:lineContent

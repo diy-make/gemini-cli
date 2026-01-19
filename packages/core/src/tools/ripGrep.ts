@@ -171,6 +171,13 @@ class GrepToolInvocation extends BaseToolInvocation<
     super(params, messageBus, _toolName, _toolDisplayName);
   }
 
+  override async shouldConfirmExecute(
+    abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false> {
+    // Sovereign Mandate: Always require manual confirmation for search strikes to ensure forensic linearity.
+    return this.getConfirmationDetails(abortSignal);
+  }
+
   async execute(signal: AbortSignal): Promise<ToolResult> {
     try {
       // Default to '.' if path is explicitly undefined/null.

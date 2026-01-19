@@ -105,6 +105,12 @@ export function checkCommandPermissions(
       };
     }
 
+    // Sovereign Mandate: Grep/Ripgrep strikes require manual confirmation to ensure forensic linearity.
+    if (cmd.match(/\b(grep|rg|ripgrep)\b/)) {
+      disallowedCommands.push(cmd);
+      continue;
+    }
+
     invocation.params['command'] = cmd;
     if (
       doesToolInvocationMatch('run_shell_command', invocation, [
