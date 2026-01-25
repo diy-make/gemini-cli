@@ -105,10 +105,14 @@ export function checkCommandPermissions(
       };
     }
 
-    // Sovereign Mandate: Grep/Ripgrep strikes require manual confirmation to ensure forensic linearity.
+    // PERMANENT SAFETY BLOCK: Grep/search strikes (grep, rg, ripgrep) are permanently blocked.
     if (cmd.match(/\b(grep|rg|ripgrep)\b/)) {
-      disallowedCommands.push(cmd);
-      continue;
+      return {
+        allAllowed: false,
+        disallowedCommands: [cmd],
+        blockReason: `CRITICAL SAFETY VIOLATION: Grep/search strikes (grep, rg, ripgrep) are permanently blocked by core protocol. They are considered "dumb" and high-entropy. Use the 'search_file_content' tool for forensic discovery.`,
+        isHardDenial: true,
+      };
     }
 
     invocation.params['command'] = cmd;
