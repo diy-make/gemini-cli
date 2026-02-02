@@ -62,3 +62,14 @@ gemini-debug.log
 .gemini-clipboard/
 .eslintcache
 evals/logs/
+
+# METAGIT RECURSIVE ISOLATION
+.venv/
+venv/
+__pycache__/
+*.pyc
+node_modules/
+
+# METAGIT RECURSIVE ISOLATION (V2)
+inbox/
+*.log

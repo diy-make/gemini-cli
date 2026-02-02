@@ -1,0 +1,45 @@
+{
+  "wedo_instance": {
+    "id": "UPDATE-SAFEGUARDS",
+    "description": "Protocol for updating the Gemini CLI from remote while preserving permanent legislative safety blocks (grep and rm -rf).",
+    "status": "[ ]",
+    "meta": {
+      "protocol": "WeDo-JSON",
+      "version": "1.0.0",
+      "philosophy": "Substrate Preservation: Technical drift from remote must not erode established legislative safeguards."
+    },
+    "tasks": [
+      {
+        "id": "US-STASH-01",
+        "description": "Verify local changes and stash to protect safeguards: 'git stash push -m \"safeguard: grep and rm-rf blocks\"'",
+        "status": "[ ]"
+      },
+      {
+        "id": "US-FETCH-02",
+        "description": "Fetch remote state: 'git fetch origin'",
+        "status": "[ ]"
+      },
+      {
+        "id": "US-PULL-03",
+        "description": "Pull remote changes: 'git pull origin main' (or active branch)",
+        "status": "[ ]"
+      },
+      {
+        "id": "US-RESTORE-04",
+        "description": "Restore safeguards from stash: 'git stash pop'",
+        "status": "[ ]"
+      },
+      {
+        "id": "US-REBUILD-05",
+        "description": "Rebuild and Rebundle to anchor safeguards in the binary: 'npm run build && npm run bundle'",
+        "status": "[ ]"
+      },
+      {
+        "id": "US-VERIFY-06",
+        "description": "Verify safeguard presence in bundle: 'grep \"CRITICAL SAFETY VIOLATION\" bundle/gemini.js'",
+        "status": "[ ]"
+      }
+    ]
+  },
+  "attribution": "Atlas (20260128-091533@localhost)"
+}
