@@ -86,7 +86,7 @@ export class Storage {
   }
 
   static getGlobalMemoryFilePath(): string {
-    return path.join(Storage.getGlobalGeminiDir(), 'memory.md');
+    return path.join(Storage.getGlobalGeminiDir(), 'SOVEREIGN.md');
   }
 
   static getUserPoliciesDir(): string {

@@ -156,22 +156,9 @@ async function getGeminiMdFilePathsInternalForEachDir(
 
   for (const geminiMdFilename of geminiMdFilenames) {
     const resolvedHome = normalizePath(userHomePath);
-    const globalGeminiDir = normalizePath(path.join(resolvedHome, GEMINI_DIR));
-    const globalMemoryPath = normalizePath(
-      path.join(globalGeminiDir, geminiMdFilename),
-    );
-
-    // This part that finds the global file always runs.
-    try {
-      await fs.access(globalMemoryPath, fsSync.constants.R_OK);
-      globalPaths.add(globalMemoryPath);
-      if (debugMode)
-        logger.debug(
-          `Found readable global ${geminiMdFilename}: ${globalMemoryPath}`,
-        );
-    } catch {
-      // It's okay if it's not found.
-    }
+    
+    // Legislative standard: Block .gemini/ from global memory discovery.
+    // Every technical instruction must be explicitly authorized.
 
     // FIX: Only perform the workspace search (upward and downward scans)
     // if a valid currentWorkingDirectory is provided.
@@ -196,8 +183,10 @@ async function getGeminiMdFilePathsInternalForEachDir(
         currentDir &&
         currentDir !== normalizePath(path.dirname(currentDir))
       ) {
-        if (currentDir === globalGeminiDir) {
-          break;
+        // Legislative standard: Block .gemini/ from hierarchical discovery.
+        if (currentDir.includes(GEMINI_DIR)) {
+          currentDir = normalizePath(path.dirname(currentDir));
+          continue;
         }
 
         const potentialPath = normalizePath(
@@ -205,9 +194,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
         );
         try {
           await fs.access(potentialPath, fsSync.constants.R_OK);
-          if (potentialPath !== globalMemoryPath) {
-            upwardPaths.unshift(potentialPath);
-          }
+          upwardPaths.unshift(potentialPath);
         } catch {
           // Not found, continue.
         }
@@ -234,7 +221,10 @@ async function getGeminiMdFilePathsInternalForEachDir(
       });
       downwardPaths.sort();
       for (const dPath of downwardPaths) {
-        projectPaths.add(normalizePath(dPath));
+        // Legislative standard: Block .gemini/ from downward discovery.
+        if (!dPath.includes(GEMINI_DIR)) {
+          projectPaths.add(normalizePath(dPath));
+        }
       }
     }
   }
@@ -440,8 +430,13 @@ async function findUpwardGeminiFiles(
   }
 
   while (true) {
-    if (currentDir === globalGeminiDir) {
-      break;
+    if (currentDir === globalGeminiDir || currentDir.includes(GEMINI_DIR)) {
+      const parentDir = normalizePath(path.dirname(currentDir));
+      if (currentDir === resolvedStopDir || currentDir === parentDir) {
+        break;
+      }
+      currentDir = parentDir;
+      continue;
     }
 
     // Parallelize checks for all filename variants in the current directory

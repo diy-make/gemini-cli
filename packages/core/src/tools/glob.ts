@@ -8,7 +8,11 @@ import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { glob, escape } from 'glob';
-import type { ToolInvocation, ToolResult } from './tools.js';
+import type {
+  ToolCallConfirmationDetails,
+  ToolInvocation,
+  ToolResult,
+} from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { shortenPath, makeRelative } from '../utils/paths.js';
 import { type Config } from '../config/config.js';
@@ -113,6 +117,29 @@ class GlobToolInvocation extends BaseToolInvocation<
     return description;
   }
 
+  override async shouldConfirmExecute(
+    abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false> {
+    const searchDirAbs = this.params.dir_path
+      ? path.resolve(this.config.getTargetDir(), this.params.dir_path)
+      : this.config.getTargetDir();
+
+    // Surgical Depth Sensing: SUBJECT and ALIEN_SUBJECT repos are trusted for high-velocity technical strikes.
+    // OBJECT and ROOT require manual validation to prevent context-mass fractures.
+    const isSubject = (
+      this.config as unknown as { isSubjectRepo: (p: string) => boolean }
+    ).isSubjectRepo?.(searchDirAbs) ?? false;
+    const isAlien = (
+      this.config as unknown as { isAlienSubject: (p: string) => boolean }
+    ).isAlienSubject?.(searchDirAbs) ?? false;
+
+    if (isSubject || isAlien) {
+      return false;
+    }
+
+    return this.getConfirmationDetails(abortSignal);
+  }
+
   async execute(signal: AbortSignal): Promise<ToolResult> {
     try {
       const workspaceContext = this.config.getWorkspaceContext();
@@ -157,6 +184,21 @@ class GlobToolInvocation extends BaseToolInvocation<
           pattern = escape(pattern);
         }
 
+        const ignorePatterns = [...this.config.getFileExclusions().getGlobExcludes()];
+
+        // ALIEN_SUBJECT Exclusion: Skip alien repositories unless specifically targeted.
+        const workspaceDirs = this.config.getWorkspaceContext().getDirectories();
+        for (const dir of workspaceDirs) {
+          if (
+            dir !== searchDir &&
+            dir.startsWith(searchDir) &&
+            (this.config as unknown as { isAlienSubject: (p: string) => boolean }).isAlienSubject?.(dir)
+          ) {
+            const relativeAlienPath = path.relative(searchDir, dir);
+            ignorePatterns.push(`${relativeAlienPath}/**`);
+          }
+        }
+
         const entries = (await glob(pattern, {
           cwd: searchDir,
           withFileTypes: true,
@@ -164,7 +206,7 @@ class GlobToolInvocation extends BaseToolInvocation<
           stat: true,
           nocase: !this.params.case_sensitive,
           dot: true,
-          ignore: this.config.getFileExclusions().getGlobExcludes(),
+          ignore: ignorePatterns,
           follow: false,
           signal,
         })) as GlobPath[];
