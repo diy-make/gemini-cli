@@ -7,6 +7,7 @@
 import { useEffect, useRef } from 'react';
 import { debugLogger } from '@google/gemini-cli-core';
 import * as fs from 'node:fs';
+import * as crypto from 'node:crypto';
 
 /**
  * Hook to listen for external prompts via the Vanguard Bridge WebSocket.
@@ -23,7 +24,7 @@ export const useNeuralPipe = (handleFinalSubmit: (value: string) => void) => {
     let socket: WebSocket | null = null;
     let reconnectTimeout: NodeJS.Timeout | null = null;
 
-    const getSovereignKey = (): string | null => {
+    const getSovereignKey = (): string => {
       try {
         if (fs.existsSync(KEY_PATH)) {
           return fs.readFileSync(KEY_PATH, 'utf8').trim();
@@ -32,6 +33,21 @@ export const useNeuralPipe = (handleFinalSubmit: (value: string) => void) => {
         debugLogger.error('🧬 [NeuralPipe] Failed to read Sovereign Key:', e);
       }
       return 'a8202279-2355-4b9a-99e5-9eef455339a6'; // Fallback to current known key
+    };
+
+    const verifySignature = (
+      content: string,
+      from: string,
+      timestamp: string,
+      signature: string,
+      key: string,
+    ): boolean => {
+      const payload = `${content}|${from}|${timestamp}`;
+      const expectedSignature = crypto
+        .createHmac('sha256', key)
+        .update(payload)
+        .digest('hex');
+      return signature === expectedSignature;
     };
 
     const connect = () => {
@@ -69,12 +85,31 @@ export const useNeuralPipe = (handleFinalSubmit: (value: string) => void) => {
             } else if (data.type === 'AGENT_CONFER' && data.content) {
               const target = data.target || 'BROADCAST';
               const fromAgent = data.from || 'Unknown';
+              const timestamp = data.timestamp || '';
+              const signature = data.signature || '';
 
               // Only process if broadcast or targeted at us (and not FROM us)
               if (
                 (target === 'BROADCAST' || target === currentAgentName) &&
                 fromAgent !== currentAgentName
               ) {
+                // Verify forensic signature if present
+                if (signature) {
+                  const isValid = verifySignature(
+                    data.content,
+                    fromAgent,
+                    timestamp,
+                    signature,
+                    sovereignKey,
+                  );
+                  if (!isValid) {
+                    debugLogger.warn(
+                      `🧬 [NeuralPipe] REJECTED unauthenticated signal from ${fromAgent}`,
+                    );
+                    return;
+                  }
+                }
+
                 // ✦✦ Alexandrian Standard: Distinct swarm prefix and mandated identity
                 const prefixedContent = `✦✦ ${fromAgent}: ${data.content}`;
                 debugLogger.log(
