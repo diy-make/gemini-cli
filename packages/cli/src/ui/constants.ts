@@ -44,7 +44,7 @@ export const KEYBOARD_SHORTCUTS_URL =
 export const LRU_BUFFER_PERF_CACHE_LIMIT = 20000;
 
 // Max lines to show for active shell output when not focused
-export const ACTIVE_SHELL_MAX_LINES = 15;
+export const ACTIVE_SHELL_MAX_LINES = 50;
 
 // Max lines to preserve in history for completed shell commands
-export const COMPLETED_SHELL_MAX_LINES = 15;
+export const COMPLETED_SHELL_MAX_LINES = 50;
