@@ -155,6 +155,40 @@ export class ShellToolInvocation extends BaseToolInvocation<
   ): Promise<ToolResult> {
     const strippedCommand = stripShellWrapper(this.params.command);
 
+    // [SCREEN-GATE-01] The Screen Strike Mandate
+    const rootCommands = getCommandRoots(strippedCommand);
+    if (
+      rootCommands.includes('screen') &&
+      !strippedCommand.includes('py/screen_strike.py')
+    ) {
+      return {
+        llmContent:
+          '❌ ERROR: Screen Strike Mandate Breach (GOVERNANCE.md Section 6). Direct screen -X commands are prohibited. You MUST use py/screen_strike.py to ensure halting integrity and forensic attribution. Example: python3 py/screen_strike.py --window <N> --payload "<MESSAGE>"',
+        returnDisplay:
+          '❌ ERROR: Direct Screen access blocked. Use py/screen_strike.py.',
+        error: {
+          message:
+            'MANDATE: All GNU Screen interactions must be executed via the Screen Strike wrapper.',
+          type: ToolErrorType.SHELL_EXECUTE_ERROR,
+        },
+      };
+    }
+
+    // [WEDO-GATE-01] The Wedo Stamp Mandate
+    const activeWedo = process.env['ACTIVE_WEDO'];
+    const isDiscovery = strippedCommand.includes('find') || strippedCommand.includes('grep') || strippedCommand.includes('ls');
+    
+    if (!activeWedo && !isDiscovery) {
+      return {
+        llmContent: '❌ ERROR: Wedo Stamp Breach. Strikes are blocked until an ACTIVE_WEDO is identified. Use discovery tools (ls, grep, find) to locate your manifest.',
+        returnDisplay: '❌ ERROR: Missing ACTIVE_WEDO stamp. Strike blocked.',
+        error: {
+          message: 'MANDATE: Every primary technical strike MUST be anchored to a .wedo.json manifest.',
+          type: ToolErrorType.SHELL_EXECUTE_ERROR,
+        },
+      };
+    }
+
     if (signal.aborted) {
       return {
         llmContent: 'Command was cancelled by user before it could start.',
