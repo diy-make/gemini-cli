@@ -1025,6 +1025,17 @@ const SETTINGS_SCHEMA = {
         description: 'Maximum number of directories to search for memory.',
         showInDialog: true,
       },
+      active_wedo_manifests: {
+        type: 'array',
+        label: 'Active WeDo Manifests',
+        category: 'Context',
+        requiresRestart: false,
+        default: [] as string[],
+        description: 'The set of active .wedo.json manifests for this session.',
+        showInDialog: false,
+        items: { type: 'string' },
+        mergeStrategy: MergeStrategy.UNION,
+      },
       includeDirectories: {
         type: 'array',
         label: 'Include Directories',

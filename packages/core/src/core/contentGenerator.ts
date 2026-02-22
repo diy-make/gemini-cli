@@ -60,6 +60,71 @@ export enum AuthType {
 }
 
 /**
+ * Sovereign Pipe Implementation: Routes requests through a centralized serial dispatcher.
+ */
+class SovereignPipeContentGenerator implements ContentGenerator {
+  constructor(private readonly dispatcherUrl: string) {}
+
+  async generateContent(
+    request: GenerateContentParameters,
+    userPromptId: string,
+  ): Promise<GenerateContentResponse> {
+    const response = await fetch(this.dispatcherUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        agent: process.env['AGENT_NAME'] || 'Leontion.agent',
+        action: 'generateContent',
+        payload: request,
+        userPromptId,
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`Sovereign Pipe Error: ${response.statusText}`);
+    }
+    const data = (await response.json()) as unknown;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+    return data as GenerateContentResponse;
+  }
+
+  async *generateContentStream(
+    request: GenerateContentParameters,
+    userPromptId: string,
+  ): AsyncGenerator<GenerateContentResponse> {
+    // Current serial dispatcher implementation uses non-streaming fallback
+    // to ensure atomic queue processing.
+    const result = await this.generateContent(request, userPromptId);
+    yield result;
+  }
+
+  async countTokens(
+    request: CountTokensParameters,
+  ): Promise<CountTokensResponse> {
+    const response = await fetch(this.dispatcherUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'countTokens', payload: request }),
+    });
+    const data = (await response.json()) as unknown;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+    return data as CountTokensResponse;
+  }
+
+  async embedContent(
+    request: EmbedContentParameters,
+  ): Promise<EmbedContentResponse> {
+    const response = await fetch(this.dispatcherUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'embedContent', payload: request }),
+    });
+    const data = (await response.json()) as unknown;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
+    return data as EmbedContentResponse;
+  }
+}
+
+/**
  * Detects the best authentication type based on environment variables.
  *
  * Checks in order:
@@ -138,6 +203,13 @@ export async function createContentGenerator(
   gcConfig: Config,
   sessionId?: string,
 ): Promise<ContentGenerator> {
+  // Sovereign Pipe Override: Route all requests through the serial dispatcher
+  if (process.env['USE_SOVEREIGN_PIPE'] === 'true') {
+    const dispatcherUrl =
+      process.env['DISPATCHER_URL'] || 'http://localhost:9224/dispatch';
+    return new SovereignPipeContentGenerator(dispatcherUrl);
+  }
+
   const generator = await (async () => {
     if (gcConfig.fakeResponses) {
       const fakeGenerator = await FakeContentGenerator.fromFile(
