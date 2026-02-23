@@ -68,6 +68,7 @@ class SovereignPipeContentGenerator implements ContentGenerator {
   async generateContent(
     request: GenerateContentParameters,
     userPromptId: string,
+    role: LlmRole,
   ): Promise<GenerateContentResponse> {
     const response = await fetch(this.dispatcherUrl, {
       method: 'POST',
@@ -77,6 +78,7 @@ class SovereignPipeContentGenerator implements ContentGenerator {
         action: 'generateContent',
         payload: request,
         userPromptId,
+        role,
       }),
     });
     if (!response.ok) {
@@ -87,14 +89,18 @@ class SovereignPipeContentGenerator implements ContentGenerator {
     return data as GenerateContentResponse;
   }
 
-  async *generateContentStream(
+  async generateContentStream(
     request: GenerateContentParameters,
     userPromptId: string,
-  ): AsyncGenerator<GenerateContentResponse> {
+    role: LlmRole,
+  ): Promise<AsyncGenerator<GenerateContentResponse>> {
     // Current serial dispatcher implementation uses non-streaming fallback
     // to ensure atomic queue processing.
-    const result = await this.generateContent(request, userPromptId);
-    yield result;
+    const generator = async function* (self: SovereignPipeContentGenerator) {
+      const result = await self.generateContent(request, userPromptId, role);
+      yield result;
+    };
+    return generator(this);
   }
 
   async countTokens(

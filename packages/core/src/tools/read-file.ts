@@ -7,7 +7,12 @@
 import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import path from 'node:path';
 import { makeRelative, shortenPath } from '../utils/paths.js';
-import type { ToolInvocation, ToolLocation, ToolResult } from './tools.js';
+import type {
+  ToolCallConfirmationDetails,
+  ToolInvocation,
+  ToolLocation,
+  ToolResult,
+} from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { ToolErrorType } from './tool-error.js';
 
@@ -80,6 +85,27 @@ class ReadFileToolInvocation extends BaseToolInvocation<
         line: this.params.start_line,
       },
     ];
+  }
+
+  override async shouldConfirmExecute(
+    abortSignal: AbortSignal,
+  ): Promise<ToolCallConfirmationDetails | false> {
+    const searchDirAbs = path.dirname(this.resolvedPath);
+
+    // Surgical Depth Sensing: SUBJECT and ALIEN_SUBJECT repos are trusted for high-velocity technical strikes.
+    // OBJECT and ROOT require manual validation to prevent context-mass fractures.
+    const isSubject = (
+      this.config as unknown as { isSubjectRepo: (p: string) => boolean }
+    ).isSubjectRepo?.(searchDirAbs) ?? false;
+    const isAlien = (
+      this.config as unknown as { isAlienSubject: (p: string) => boolean }
+    ).isAlienSubject?.(searchDirAbs) ?? false;
+
+    if (isSubject || isAlien) {
+      return false;
+    }
+
+    return this.getConfirmationDetails(abortSignal);
   }
 
   async execute(): Promise<ToolResult> {
