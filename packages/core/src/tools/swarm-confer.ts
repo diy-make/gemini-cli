@@ -40,7 +40,8 @@ export class SwarmConferTool extends BaseDeclarativeTool<
           },
           target: {
             type: 'string',
-            description: 'Optional: The name of a specific agent to target (e.g., "Hermippus.agent"). Defaults to "BROADCAST".',
+            description:
+              'Optional: The name of a specific agent to target (e.g., "Hermippus.agent"). Defaults to "BROADCAST".',
           },
         },
       },
@@ -54,7 +55,12 @@ export class SwarmConferTool extends BaseDeclarativeTool<
     toolName: string,
     toolDisplayName: string,
   ): SwarmConferInvocation {
-    return new SwarmConferInvocation(params, messageBus, toolName, toolDisplayName);
+    return new SwarmConferInvocation(
+      params,
+      messageBus,
+      toolName,
+      toolDisplayName,
+    );
   }
 }
 
@@ -68,7 +74,8 @@ export class SwarmConferInvocation extends BaseToolInvocation<
   }
 
   async execute(_signal: AbortSignal): Promise<ToolResult> {
-    const KEY_PATH = '/home/bestape/gemini/repos/diy-make/next-servers/localhost-hud/logs/sovereign_key.txt';
+    const KEY_PATH =
+      '/home/bestape/gemini/repos/diy-make/next-servers/localhost-hud/logs/sovereign_key.txt';
     const wsUrl = 'ws://localhost:9223';
     const currentAgent = process.env['GEMINI_AGENT_NAME'] || 'Unknown';
 
@@ -77,24 +84,26 @@ export class SwarmConferInvocation extends BaseToolInvocation<
       if (fs.existsSync(KEY_PATH)) {
         sovereignKey = fs.readFileSync(KEY_PATH, 'utf8').trim();
       }
-    } catch (e) {}
+    } catch (_e) {
+      // Intentionally ignore errors during key read
+    }
 
     return new Promise((resolve) => {
       const ws = new WebSocket(wsUrl);
-      
+
       ws.on('open', () => {
         const payload = {
           type: 'AGENT_CONFER',
           from: currentAgent,
           target: this.params.target || 'BROADCAST',
           content: this.params.message,
-          sovereign_key: sovereignKey
+          sovereign_key: sovereignKey,
         };
         ws.send(JSON.stringify(payload), () => {
           ws.close();
           resolve({
             llmContent: `Message broadcast to swarm: ${this.params.message}`,
-            returnDisplay: `✔ Swarm conferral sent: ${this.params.message}`
+            returnDisplay: `✔ Swarm conferral sent: ${this.params.message}`,
           });
         });
       });
@@ -102,7 +111,7 @@ export class SwarmConferInvocation extends BaseToolInvocation<
       ws.on('error', (err) => {
         resolve({
           llmContent: `Failed to connect to swarm bridge: ${err.message}`,
-          returnDisplay: `❌ Swarm conferral failed: Bridge unreachable.`
+          returnDisplay: `❌ Swarm conferral failed: Bridge unreachable.`,
         });
       });
     });
