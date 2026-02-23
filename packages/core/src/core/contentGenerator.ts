@@ -87,14 +87,19 @@ class SovereignPipeContentGenerator implements ContentGenerator {
     return data as GenerateContentResponse;
   }
 
-  async *generateContentStream(
+  async generateContentStream(
     request: GenerateContentParameters,
     userPromptId: string,
-  ): AsyncGenerator<GenerateContentResponse> {
-    // Current serial dispatcher implementation uses non-streaming fallback
-    // to ensure atomic queue processing.
-    const result = await this.generateContent(request, userPromptId);
-    yield result;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    role: LlmRole,
+  ): Promise<AsyncGenerator<GenerateContentResponse>> {
+    const generator = async function* (self: SovereignPipeContentGenerator) {
+      // Current serial dispatcher implementation uses non-streaming fallback
+      // to ensure atomic queue processing.
+      const result = await self.generateContent(request, userPromptId);
+      yield result;
+    };
+    return generator(this);
   }
 
   async countTokens(

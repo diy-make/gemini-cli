@@ -10,7 +10,7 @@ import {
   type ToolResult,
   Kind,
 } from './tools.js';
-import { SWARM_CONFER_TOOL_NAME } from './tool-names.js';
+
 import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import * as fs from 'node:fs';
 import WebSocket from 'ws';
@@ -26,7 +26,7 @@ export class SwarmConferTool extends BaseDeclarativeTool<
 > {
   constructor(messageBus: MessageBus) {
     super(
-      SWARM_CONFER_TOOL_NAME,
+      'confer_with_swarm',
       'ConferWithSwarm',
       'Broadcast a message to all other active agents in the swarm or target a specific agent for realtime coordination.',
       Kind.Communicate,
