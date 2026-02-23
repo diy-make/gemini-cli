@@ -73,3 +73,4 @@ node_modules/
 # METAGIT RECURSIVE ISOLATION (V2)
 inbox/
 *.log
+trash/
