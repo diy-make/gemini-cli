@@ -287,16 +287,6 @@ const SETTINGS_SCHEMA = {
           },
         },
       },
-      enablePromptCompletion: {
-        type: 'boolean',
-        label: 'Enable Prompt Completion',
-        category: 'General',
-        requiresRestart: true,
-        default: false,
-        description:
-          'Enable AI-powered prompt completion suggestions while typing.',
-        showInDialog: true,
-      },
       retryFetchErrors: {
         type: 'boolean',
         label: 'Retry Fetch Errors',
@@ -1024,17 +1014,6 @@ const SETTINGS_SCHEMA = {
         default: 200,
         description: 'Maximum number of directories to search for memory.',
         showInDialog: true,
-      },
-      active_wedo_manifests: {
-        type: 'array',
-        label: 'Active WeDo Manifests',
-        category: 'Context',
-        requiresRestart: false,
-        default: [] as string[],
-        description: 'The set of active .wedo.json manifests for this session.',
-        showInDialog: false,
-        items: { type: 'string' },
-        mergeStrategy: MergeStrategy.UNION,
       },
       includeDirectories: {
         type: 'array',

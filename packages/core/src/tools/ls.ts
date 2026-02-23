@@ -7,11 +7,7 @@
 import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import type {
-  ToolCallConfirmationDetails,
-  ToolInvocation,
-  ToolResult,
-} from './tools.js';
+import type { ToolInvocation, ToolResult } from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { makeRelative, shortenPath } from '../utils/paths.js';
 import type { Config } from '../config/config.js';
@@ -120,30 +116,6 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
       this.config.getTargetDir(),
     );
     return shortenPath(relativePath);
-  }
-
-  override async shouldConfirmExecute(
-    abortSignal: AbortSignal,
-  ): Promise<ToolCallConfirmationDetails | false> {
-    const resolvedDirPath = path.resolve(
-      this.config.getTargetDir(),
-      this.params.dir_path,
-    );
-
-    // Surgical Depth Sensing: SUBJECT and ALIEN_SUBJECT repos are trusted for high-velocity technical strikes.
-    // OBJECT and ROOT require manual validation to prevent context-mass fractures.
-    const isSubject = (
-      this.config as unknown as { isSubjectRepo: (p: string) => boolean }
-    ).isSubjectRepo?.(resolvedDirPath) ?? false;
-    const isAlien = (
-      this.config as unknown as { isAlienSubject: (p: string) => boolean }
-    ).isAlienSubject?.(resolvedDirPath) ?? false;
-
-    if (isSubject || isAlien) {
-      return false;
-    }
-
-    return this.getConfirmationDetails(abortSignal);
   }
 
   // Helper for consistent error formatting

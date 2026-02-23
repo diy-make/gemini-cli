@@ -1,9 +1,5 @@
 # Sovereign Metagit: Legislative Memory Standard
 
-**SECURITY NOTICE:** The `.gemini/` directory has been officially blocked as a source for long-term agent memory. This system was deemed legislatively unfit and vulnerable to unauthorized "alien DNA injection" (e.g., Gitcoin / Owockibot Social Contracts). All persistent agent instructions must now reside exclusively in the **Heartwood** (`repos/diy-make/memory/public/json/heartwood/`) or be explicitly authorized via `settings.json`. Implicit hierarchical discovery from hidden directories is decommissioned.
-
-# Sovereign Metagit: Legislative Memory Standard
-
 **NOTICE:** The `.gemini/GEMINI.md` memory system has been decommissioned in this fork. It is deemed legislatively unfit and vulnerable to under-the-hood "alien DNA injection" (as demonstrated by the Gitcoin/Owockibot Community Social Contract). All persistent agent instructions must now reside in `.gemini/SOVEREIGN.md`. System level memory is isolated from workspace-specific technical strikes.
 
 # Gemini CLI (Sovereign MetaGit Fork)

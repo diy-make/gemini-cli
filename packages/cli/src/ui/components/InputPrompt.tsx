@@ -43,6 +43,7 @@ import {
   ApprovalMode,
   debugLogger,
   coreEvents,
+  CoreEvent,
 } from '@google/gemini-cli-core';
 import {
   parseInputForHighlighting,
@@ -345,8 +346,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
       // Clear the buffer *before* calling onSubmit to prevent potential re-submission
       // if onSubmit triggers a re-render while the buffer still holds the old value.
       buffer.setText('');
-      // TODO(fix): CoreEvent.BrowserInput has been removed. Re-evaluate if this event is still needed.
-      // coreEvents.emit(CoreEvent.BrowserInput, { text: submittedValue });
+      coreEvents.emit(CoreEvent.BrowserInput, { text: submittedValue });
       onSubmit(processedValue);
       resetCompletionState();
       resetReverseSearchCompletionState();

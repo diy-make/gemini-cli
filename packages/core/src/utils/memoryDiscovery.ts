@@ -156,9 +156,16 @@ async function getGeminiMdFilePathsInternalForEachDir(
 
   for (const geminiMdFilename of geminiMdFilenames) {
     const resolvedHome = normalizePath(userHomePath);
-    
+    const globalGeminiDir = normalizePath(path.join(resolvedHome, GEMINI_DIR));
+    const globalMemoryPath = normalizePath(
+      path.join(globalGeminiDir, geminiMdFilename),
+    );
+
     // Legislative standard: Block .gemini/ from global memory discovery.
     // Every technical instruction must be explicitly authorized.
+    // In this fork we do NOT automatically add global memory from .gemini/
+    // Unless specifically needed, we keep globalPaths empty or handled differently.
+    // For now, mirroring sovereign-metagit behavior of skip.
 
     // FIX: Only perform the workspace search (upward and downward scans)
     // if a valid currentWorkingDirectory is provided.
@@ -184,7 +191,7 @@ async function getGeminiMdFilePathsInternalForEachDir(
         currentDir !== normalizePath(path.dirname(currentDir))
       ) {
         // Legislative standard: Block .gemini/ from hierarchical discovery.
-        if (currentDir.includes(GEMINI_DIR)) {
+        if (currentDir === globalGeminiDir || currentDir.includes(GEMINI_DIR)) {
           currentDir = normalizePath(path.dirname(currentDir));
           continue;
         }
@@ -194,7 +201,9 @@ async function getGeminiMdFilePathsInternalForEachDir(
         );
         try {
           await fs.access(potentialPath, fsSync.constants.R_OK);
-          upwardPaths.unshift(potentialPath);
+          if (potentialPath !== globalMemoryPath) {
+            upwardPaths.unshift(potentialPath);
+          }
         } catch {
           // Not found, continue.
         }

@@ -27,7 +27,7 @@ import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import { MEMORY_DEFINITION } from './definitions/coreTools.js';
 import { resolveToolDeclaration } from './definitions/resolver.js';
 
-export const DEFAULT_CONTEXT_FILENAME = '.gemini/SOVEREIGN.md';
+export const DEFAULT_CONTEXT_FILENAME = 'GEMINI.md';
 export const MEMORY_SECTION_HEADER = '## Gemini Added Memories';
 
 // This variable will hold the currently configured filename for GEMINI.md context files.
@@ -65,7 +65,7 @@ interface SaveMemoryParams {
 }
 
 export function getGlobalMemoryFilePath(): string {
-  return path.join(Storage.getGlobalGeminiDir(), 'SOVEREIGN.md');
+  return path.join(Storage.getGlobalGeminiDir(), getCurrentGeminiMdFilename());
 }
 
 /**

@@ -5,11 +5,7 @@
  */
 
 import type { MessageBus } from '../confirmation-bus/message-bus.js';
-import type {
-  ToolCallConfirmationDetails,
-  ToolInvocation,
-  ToolResult,
-} from './tools.js';
+import type { ToolInvocation, ToolResult } from './tools.js';
 import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { getErrorMessage } from '../utils/errors.js';
 import * as fsPromises from 'node:fs/promises';
@@ -154,27 +150,6 @@ ${finalExclusionPatternsForDescription
     )}".`;
   }
 
-  override async shouldConfirmExecute(
-    abortSignal: AbortSignal,
-  ): Promise<ToolCallConfirmationDetails | false> {
-    const searchDirAbs = this.config.getTargetDir();
-
-    // Surgical Depth Sensing: SUBJECT and ALIEN_SUBJECT repos are trusted for high-velocity technical strikes.
-    // OBJECT and ROOT require manual validation to prevent context-mass fractures.
-    const isSubject = (
-      this.config as unknown as { isSubjectRepo: (p: string) => boolean }
-    ).isSubjectRepo?.(searchDirAbs) ?? false;
-    const isAlien = (
-      this.config as unknown as { isAlienSubject: (p: string) => boolean }
-    ).isAlienSubject?.(searchDirAbs) ?? false;
-
-    if (isSubject || isAlien) {
-      return false;
-    }
-
-    return this.getConfirmationDetails(abortSignal);
-  }
-
   async execute(signal: AbortSignal): Promise<ToolResult> {
     const { include, exclude = [], useDefaultExcludes = true } = this.params;
 
@@ -186,20 +161,6 @@ ${finalExclusionPatternsForDescription
     const effectiveExcludes = useDefaultExcludes
       ? [...getDefaultExcludes(this.config), ...exclude]
       : [...exclude];
-
-    // ALIEN_SUBJECT Exclusion: Skip alien repositories unless specifically targeted.
-    const searchDirAbs = this.config.getTargetDir();
-    const workspaceDirs = this.config.getWorkspaceContext().getDirectories();
-    for (const dir of workspaceDirs) {
-      if (
-        dir !== searchDirAbs &&
-        dir.startsWith(searchDirAbs) &&
-        (this.config as unknown as { isAlienSubject: (p: string) => boolean }).isAlienSubject?.(dir)
-      ) {
-        const relativeAlienPath = path.relative(searchDirAbs, dir);
-        effectiveExcludes.push(`${relativeAlienPath}/**`);
-      }
-    }
 
     try {
       const allEntries = new Set<string>();

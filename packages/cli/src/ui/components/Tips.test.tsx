@@ -6,13 +6,27 @@
 
 import { render } from '../../test-utils/render.js';
 import { Tips } from './Tips.js';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import type { Config } from '@google/gemini-cli-core';
 
 describe('Tips', () => {
-  it('renders correct tips', () => {
-    const { lastFrame } = render(<Tips />);
-    const output = lastFrame();
-    expect(output).toContain('Get started by typing:');
-    expect(output).toContain('"do readme.ai"');
-  });
+  it.each([
+    [0, '3. Create GEMINI.md files'],
+    [5, '3. /help for more information'],
+  ])(
+    'renders correct tips when file count is %i',
+    async (count, expectedText) => {
+      const config = {
+        getGeminiMdFileCount: vi.fn().mockReturnValue(count),
+      } as unknown as Config;
+
+      const { lastFrame, waitUntilReady, unmount } = render(
+        <Tips config={config} />,
+      );
+      await waitUntilReady();
+      const output = lastFrame();
+      expect(output).toContain(expectedText);
+      unmount();
+    },
+  );
 });
