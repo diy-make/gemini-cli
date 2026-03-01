@@ -85,6 +85,7 @@ import { theme } from '../semantic-colors.js';
 import { getToolGroupBorderAppearance } from '../utils/borderStyles.js';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { exec } from 'node:child_process';
 import { useSessionStats } from '../contexts/SessionContext.js';
 import { useKeypress } from './useKeypress.js';
 import type { LoadedSettings } from '../../config/settings.js';
@@ -1296,6 +1297,17 @@ export const useGeminiStream = (
 
             if (!shouldProceed || queryToSend === null) {
               return;
+            }
+
+            // [SOV-07] Active Strike: Reset mission status to [ ] on user comment
+            try {
+              const projectRoot = config.getProjectRoot();
+              if (projectRoot) {
+                const scriptPath = path.join(projectRoot, 'py/anchor_task.py');
+                exec(`python3 "${scriptPath}" --active`);
+              }
+            } catch {
+              // Silently fail to avoid UI noise during turn start
             }
 
             if (!options?.isContinuation) {

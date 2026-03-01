@@ -8,7 +8,13 @@ import type React from 'react';
 import { Box, Text } from 'ink';
 import { theme } from '../semantic-colors.js';
 
-export const Tips: React.FC = () => (
+import type { Config } from '@google/gemini-cli-core';
+
+interface TipsProps {
+  config?: Config;
+}
+
+export const Tips: React.FC<TipsProps> = () => (
   <Box flexDirection="column">
     <Text color={theme.text.primary}>Get started by typing:</Text>
     <Text color={theme.text.accent}>&quot;do readme.ai&quot;</Text>
