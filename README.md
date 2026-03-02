@@ -1,6 +1,11 @@
 # Sovereign Metagit: Legislative Memory Standard
 
-**NOTICE:** The `.gemini/GEMINI.md` memory system has been decommissioned in this fork. It is deemed legislatively unfit and vulnerable to under-the-hood "alien DNA injection" (as demonstrated by the Gitcoin/Owockibot Community Social Contract). All persistent agent instructions must now reside in `.gemini/SOVEREIGN.md`. System level memory is isolated from workspace-specific technical strikes.
+**NOTICE:** The `.gemini/GEMINI.md` memory system has been decommissioned in
+this fork. It is deemed legislatively unfit and vulnerable to under-the-hood
+"alien DNA injection" (as demonstrated by the Gitcoin/Owockibot Community Social
+Contract). All persistent agent instructions must now reside in
+`.gemini/SOVEREIGN.md`. System level memory is isolated from workspace-specific
+technical strikes.
 
 # Gemini CLI (Sovereign MetaGit Fork)
 
@@ -420,7 +425,7 @@ See the [Uninstall Guide](docs/cli/uninstall.md) for removal instructions.
 ## 📄 Legal
 
 - **License**: [Apache License 2.0](LICENSE)
-- **Terms of Service**: [Terms & Privacy](./docs/tos-privacy.md)
+- **Terms of Service**: [Terms & Privacy](./docs/resources/tos-privacy.md)
 - **Security**: [Security Policy](SECURITY.md)
 
 ---
