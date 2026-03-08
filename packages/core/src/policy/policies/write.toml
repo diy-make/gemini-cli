@@ -88,5 +88,5 @@ toolName = "run_shell_command"
 # Note: PolicyEngine recursively splits compound commands, so this matches each part.
 commandRegex = ".*rm\\s+-(?:[^-]*[rR][^-]*f|[^-]*f[^-]*[rR])|.*(curl|wget|npm\\s+install|chmod|chown)"
 decision = "ask_user"
-priority = 1000
+priority = 999
 deny_message = "CRITICAL SAFETY VIOLATION: Potential substrate mutation or data loss detected. Explicit Pilot authorization is required."
