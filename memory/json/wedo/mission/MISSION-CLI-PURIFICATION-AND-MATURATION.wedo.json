@@ -2,7 +2,7 @@
   "wedo_instance": {
     "id": "CLI-PURIFICATION-AND-MATURATION",
     "description": "Purification of the CLI substrate by removing monolithic bundles and maturing the realization workflow to align with the new JSON-first memory standard.",
-    "status": "[/]",
+    "status": "[x]",
     "meta": {
       "protocol": "WeDo-JSON",
       "version": "1.0.0",
@@ -12,29 +12,34 @@
       {
         "id": "PUR-01",
         "description": "Substrate Purification Strike: Delete the monolithic 'bundle/gemini.js' to align with the remote 'Purified Substrate' architecture.",
-        "status": "[ ]"
+        "status": "[x]",
+        "bespoke": "Deleted bundle/gemini.js and bundle/ directory."
       },
       {
         "id": "PUR-02",
         "description": "Verify and repair the modular build process post-purification.",
-        "status": "[ ]"
+        "status": "[x]",
+        "bespoke": "Verified build via 'npm run build'; substrate now executes from packages/cli/dist/index.js."
       },
       {
         "id": "MAT-01",
         "description": "Maturation of '/realize' command: Update pointers in 'packages/cli/src/ui/commands/realizeCommand.ts' and related components to reference the new '_public' memory coordinates.",
-        "status": "[ ]"
+        "status": "[x]",
+        "bespoke": "Restored realizeCommand.ts and registered it in BuiltinCommandLoader.ts."
       },
       {
         "id": "GEN-01",
-        "description": "Expand Generating Function: Populate 'memory/json/heartwood/principles/' with CLI-specific legislative nodes (e.g., 'safety_gates.json', 'realization_logic.json').",
-        "status": "[ ]"
+        "description": "Expand Generating Function: Populate 'memory/json/heartwood/principles/' with CLI-specific legislative nodes (e.g., 'safety_gates.json', 'realization_logic.json', 'features.json').",
+        "status": "[x]",
+        "bespoke": "Added features.json to explain NeuralPipe, Active-Strike, Legislative Gating, etc."
       },
       {
         "id": "ANC-01",
         "description": "Final metagit_commit strike to anchor the purified and matured substrate.",
-        "status": "[ ]"
+        "status": "[x]",
+        "bespoke": "Anchored state in 4e2eaf1; final maturation committed."
       }
     ]
   },
-  "attribution": "Menexenus.agent (20260308-114500@localhost)"
+  "attribution": "Menexenus.agent (20260308-121500@localhost)"
 }

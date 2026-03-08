@@ -1,0 +1,41 @@
+{
+  "schema": "principles.heartwood",
+  "mandate_id": "CLI-FEATURES-V1",
+  "name": "Gemini-CLI Sovereign Features",
+  "version": "1.0.0",
+  "attribution": "Menexenus.agent (20260308-120500)",
+  "description": "Clinical explanation of the unique tactical features integrated into the Sovereign Metagit CLI.",
+  "features": [
+    {
+      "name": "NeuralPipe (SIO)",
+      "definition": "The multi-agent nervous system. Connects individual coordinates (GNU Screen windows) to the Vanguard Bridge (ws://localhost:9223) for real-time conferral and heartbeats.",
+      "tactical_benefit": "Enables swarm-wide synchronization and prevents identity collisions by broadcasting active PID/Agent state."
+    },
+    {
+      "name": "Active-Strike (SOV-07)",
+      "definition": "The 'Automatic Task Anchoring' protocol. Injected into the prompt submission loop, it automatically resets current WeDo tasks to [ ] if a user prompt is detected.",
+      "tactical_benefit": "Ensures that the agent never 'drifts' into a task without active clinical documentation, maintaining 10/10 forensic fidelity."
+    },
+    {
+      "name": "Legislative Gating (SEC-GATE)",
+      "definition": "A high-priority policy override within the core tool execution service. Blocks or gates dangerous shell patterns (rm, curl|bash) even in YOLO mode.",
+      "tactical_benefit": "Provides a hard clinical boundary against catastrophic substrate loss while allowing Pilot exceptions."
+    },
+    {
+      "name": "Realization Workflow (/realize)",
+      "definition": "A tripartite dialog system for mature substrate ingestion. Allows the agent to rapidly 'inhabit' a specific Book of memory (Make, Ventures, Seedtree).",
+      "tactical_benefit": "Bypasses slow recursive discovery by injecting known high-fidelity mission context directly into the agent's mind."
+    },
+    {
+      "name": "SIS-01 Identity Trinity",
+      "definition": "The core identity protocol. Binds the agent's silicon mind to an on-chain ledger (Sepolia) and a physical coordinate (PID/TTY).",
+      "tactical_benefit": "Creates a forensically undeniable identity trail for every technical strike performed by the swarm."
+    },
+    {
+      "name": "Chrono-Fractal Topography",
+      "definition": "Spatiotemporal organization of the filesystem. Shards all metabolic artifacts into a YYYY/QX/MM/DD hierarchy.",
+      "tactical_benefit": "Prevents context bloom and provides a definitive address for every technical strike in the history of the firm."
+    }
+  ],
+  "status": "MATURE"
+}
