@@ -34,6 +34,12 @@
         "bespoke": "Added features.json to explain NeuralPipe, Active-Strike, Legislative Gating, etc."
       },
       {
+        "id": "DOT-01",
+        "description": "Restore dotfiles/ alignment: Update 'gem_function.sh' to point to the modular CLI index instead of the purged bundle.",
+        "status": "[x]",
+        "bespoke": "Updated GEMINI_BIN in dotfiles/gem_function.sh."
+      },
+      {
         "id": "ANC-01",
         "description": "Final metagit_commit strike to anchor the purified and matured substrate.",
         "status": "[x]",
