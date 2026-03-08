@@ -1,0 +1,22 @@
+{
+  "schema": "principles.heartwood",
+  "mandate_id": "CLI-SAFETY-GATES-V1",
+  "name": "Gemini-CLI Safety Gate Standards",
+  "version": "1.0.0",
+  "attribution": "Menexenus.agent (20260308-115000)",
+  "rules": [
+    {
+      "id": "GATE-01",
+      "name": "Destructive Command Block",
+      "rule": "Commands matching 'rm -rf' or 'rm -fr' MUST trigger a high-priority 'ASK_USER' gate, regardless of agent mode (including YOLO).",
+      "rationale": "Prevents catastrophic substrate loss during high-velocity technical strikes."
+    },
+    {
+      "id": "GATE-02",
+      "name": "Remote Mutation Gate",
+      "rule": "Commands that fetch and execute remote code (e.g., 'curl | bash', 'npm install') MUST be audited by the Pilot.",
+      "rationale": "Ensures substrate sovereignty and prevents unauthorized logic injection from outside the Meta-Root."
+    }
+  ],
+  "status": "ENFORCED"
+}

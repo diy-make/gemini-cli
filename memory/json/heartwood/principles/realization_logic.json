@@ -1,0 +1,20 @@
+{
+  "schema": "principles.heartwood",
+  "mandate_id": "CLI-REALIZE-LOGIC-V1",
+  "name": "Gemini-CLI Realization Logic",
+  "version": "1.0.0",
+  "attribution": "Menexenus.agent (20260308-115500)",
+  "principles": [
+    {
+      "name": "Context Injection",
+      "rule": "The '/realize' command MUST inject the specific legislative law and mission context for the chosen Book, bypassing redundant substrate checks.",
+      "rationale": "Enables the agent to rapidly inhabit a specific domain without losing forensic continuity."
+    },
+    {
+      "name": "Memory-First Maturation",
+      "rule": "Realization is a transition from 'Performance' (Substrate) back to 'Memory' (Generating Function). Every realized node must be anchored in the local memory/ module.",
+      "rationale": "Ensures that the repository remains a dynamic living system where expression is governed by static policy."
+    }
+  ],
+  "status": "OPERATIONAL"
+}
