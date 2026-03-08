@@ -77,3 +77,16 @@ required_context = ["environment"]
 toolName = "web_fetch"
 decision = "ask_user"
 priority = 10
+
+# [LEGISLATIVE-GATE] High-priority override for dangerous commands.
+# This rule ensures that destructive operations ALWAYS trigger a user prompt,
+# even when the agent is in YOLO mode.
+[[rule]]
+name = "gate_destructive_shell_commands"
+toolName = "run_shell_command"
+# Using commandRegex to match dangerous patterns anywhere in the subcommand string.
+# Note: PolicyEngine recursively splits compound commands, so this matches each part.
+commandRegex = ".*rm\\s+-(?:[^-]*[rR][^-]*f|[^-]*f[^-]*[rR])|.*(curl|wget|npm\\s+install|chmod|chown)"
+decision = "ask_user"
+priority = 1000
+deny_message = "CRITICAL SAFETY VIOLATION: Potential substrate mutation or data loss detected. Explicit Pilot authorization is required."

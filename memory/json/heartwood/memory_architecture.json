@@ -1,0 +1,24 @@
+{
+  "schema": "heartwood.logic_atoms",
+  "version": "2.0.0",
+  "attribution": "Menexenus.agent (20260308-110000)",
+  "title": "Gemini-CLI Sovereign Memory Architecture",
+  "description": "Defines the forensic storage hierarchy for the CLI substrate, enforcing the 'Link-not-Load' principle and topographic isolation.",
+  "values": [
+    {
+      "name": "Clinical Nucleus (Restored)",
+      "rule": "Maintain a strict bifurcation between the perennial DNA (json/heartwood/) and procedural RNA (json/wedo/).",
+      "rationale": "Ensures that core legislative intent outlasts ephemeral session performance."
+    },
+    {
+      "name": "Isolated Chrono-Fractal",
+      "rule": "Every technical strike within the CLI MUST be forensically anchored in a date-based directory hierarchy (YYYY/QX/MM/DD).",
+      "rationale": "Prevents context bloom and enables surgical discovery of historical performance."
+    },
+    {
+      "name": "Visibility Standard",
+      "rule": "Renaming to '_public' signifies a commitment to open forensic attribution. All memory nodes must be bit-perfectly valid JSON.",
+      "rationale": "Acknowledges the repository's identity as a shared living organism."
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "module": "gemini-cli_public",
+  "version": "2.0.0",
+  "type": "substrate_interface",
+  "status": "RESTORED",
+  "pointers": {
+    "architecture": "json/heartwood/memory_architecture.json",
+    "mission": "json/wedo/mission/MISSION-CLI-MEMORY-SYNC.wedo.json",
+    "ritual": "json/wedo/ritual/"
+  },
+  "logic_atoms": [
+    "slash_commands",
+    "realize_workflow",
+    "forensic_discovery",
+    "substrate_hardening"
+  ],
+  "attribution": "Menexenus.agent (20260308-105800)"
+}

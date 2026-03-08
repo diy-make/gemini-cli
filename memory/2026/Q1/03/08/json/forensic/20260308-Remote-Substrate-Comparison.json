@@ -1,0 +1,17 @@
+{
+  "schema": "audit.forensic",
+  "version": "1.0.0",
+  "attribution": "Menexenus.agent (20260308-110500)",
+  "title": "Remote Substrate Comparison: origin/sovereign-metagit",
+  "description": "Topographic diff between local realized substrate and remote legislative trunk.",
+  "findings": {
+    "topographic_drift": "Remote contains 634 changed files with massive deletions (-604,380 lines) in the bundle/ directory, indicating a 'Purified Substrate' transition on the remote.",
+    "legislative_divergence": [
+      ".gemini/commands/promote-behavioral-eval.toml deleted on remote.",
+      "packages/cli/src/ui/components/DialogManager.tsx modified (-42 lines).",
+      "packages/core/src/policy/policy-engine.ts heavily refactored (-211 lines)."
+    ],
+    "logarithmic_expression": "The remote performance is significantly leaner, prioritizing modularity over bundled monoliths. Local expression is currently 'high-mass' due to the restored memory fragments."
+  },
+  "status": "AUDITED"
+}

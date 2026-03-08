@@ -1,0 +1,40 @@
+{
+  "wedo_instance": {
+    "id": "CLI-MEMORY-SYNC",
+    "description": "Restoration of the gemini-cli_public memory module and forensic comparison with remote state to identify logarithmic divergence.",
+    "status": "[/]",
+    "meta": {
+      "protocol": "WeDo-JSON",
+      "version": "1.0.0",
+      "philosophy": "Memory is the generating function of the runtime. We rebuild the mind to re-secure the body."
+    },
+    "tasks": [
+      {
+        "id": "MEM-01",
+        "description": "Scaffold the memory/ directory structure following the Clinical Nucleus and Von Neumann standards.",
+        "status": "[x]"
+      },
+      {
+        "id": "MEM-02",
+        "description": "Populate evergreen Heartwood nodes (setup.json, memory_architecture.json) from local context.",
+        "status": "[/]"
+      },
+      {
+        "id": "MEM-03",
+        "description": "Fetch remote state (origin/sovereign-metagit) and perform a topographic diff.",
+        "status": "[ ]"
+      },
+      {
+        "id": "MEM-04",
+        "description": "Document logarithmic differences in a dedicated comparison node within memory/.",
+        "status": "[ ]"
+      },
+      {
+        "id": "MEM-05",
+        "description": "Execute initial metagit_commit strike to anchor the restored Generating Function.",
+        "status": "[ ]"
+      }
+    ]
+  },
+  "attribution": "Menexenus.agent (20260308-105500@localhost)"
+}
