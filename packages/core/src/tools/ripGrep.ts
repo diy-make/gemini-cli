@@ -9,22 +9,14 @@ import fs from 'node:fs';
 import fsPromises from 'node:fs/promises';
 import path from 'node:path';
 import { downloadRipGrep } from '@joshua.litt/get-ripgrep';
-<<<<<<< HEAD
-import type {
-  ToolCallConfirmationDetails,
-  ToolInvocation,
-  ToolResult,
-} from './tools.js';
-import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
-=======
 import {
   BaseDeclarativeTool,
   BaseToolInvocation,
   Kind,
+  type ToolCallConfirmationDetails,
   type ToolInvocation,
   type ToolResult,
 } from './tools.js';
->>>>>>> v0.34.0-nightly.20260310.4653b126f
 import { ToolErrorType } from './tool-error.js';
 import { makeRelative, shortenPath } from '../utils/paths.js';
 import { getErrorMessage, isNodeError } from '../utils/errors.js';

@@ -296,3 +296,4 @@ export function isValidToolName(
 
   return false;
 }
+export const LS_DISPLAY_NAME = 'ListFiles';

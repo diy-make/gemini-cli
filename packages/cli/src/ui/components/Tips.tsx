@@ -15,8 +15,6 @@ interface TipsProps {
 }
 
 export const Tips: React.FC<TipsProps> = ({ config }) => {
-  const geminiMdFileCount = config?.getGeminiMdFileCount() ?? 0;
-
   return (
     <Box flexDirection="column" marginTop={1}>
       <Text color={theme.text.primary}>🔱 Sovereign Metagit Tips:</Text>
