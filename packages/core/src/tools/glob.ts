@@ -8,12 +8,14 @@ import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { glob, escape } from 'glob';
-import type {
-  ToolCallConfirmationDetails,
-  ToolInvocation,
-  ToolResult,
+import {
+  BaseDeclarativeTool,
+  BaseToolInvocation,
+  Kind,
+  type ToolCallConfirmationDetails,
+  type ToolInvocation,
+  type ToolResult,
 } from './tools.js';
-import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { shortenPath, makeRelative } from '../utils/paths.js';
 import { type Config } from '../config/config.js';
 import { DEFAULT_FILE_FILTERING_OPTIONS } from '../config/constants.js';
@@ -238,64 +240,47 @@ class GlobToolInvocation extends BaseToolInvocation<
         filteredAbsolutePaths.has(entry.fullpath()),
       );
 
-      if (!filteredEntries || filteredEntries.length === 0) {
-        let message = `No files found matching pattern "${this.params.pattern}"`;
-        if (searchDirectories.length === 1) {
-          message += ` within ${searchDirectories[0]}`;
-        } else {
-          message += ` within ${searchDirectories.length} workspace directories`;
-        }
+      if (filteredEntries.length === 0) {
+        let message = `No files found matching '${this.params.pattern}'.`;
         if (ignoredCount > 0) {
-          message += ` (${ignoredCount} files were ignored)`;
+          message += ` (${ignoredCount} files were ignored by .gitignore or .geminiignore)`;
         }
         return {
           llmContent: message,
-          returnDisplay: `No files found`,
+          returnDisplay: 'No files found.',
         };
       }
 
-      // Set filtering such that we first show the most recent files
-      const oneDayInMs = 24 * 60 * 60 * 1000;
-      const nowTimestamp = new Date().getTime();
-
-      // Sort the filtered entries using the new helper function
+      const recencyThresholdMs = 2 * 24 * 60 * 60 * 1000; // 2 days
+      const now = Date.now();
       const sortedEntries = sortFileEntries(
         filteredEntries,
-        nowTimestamp,
-        oneDayInMs,
+        now,
+        recencyThresholdMs,
       );
 
-      const sortedAbsolutePaths = sortedEntries.map((entry) =>
-        entry.fullpath(),
+      const finalPaths = sortedEntries.map((p) =>
+        path.relative(this.config.getTargetDir(), p.fullpath()),
       );
-      const fileListDescription = sortedAbsolutePaths.join('\n');
-      const fileCount = sortedAbsolutePaths.length;
 
-      let resultMessage = `Found ${fileCount} file(s) matching "${this.params.pattern}"`;
-      if (searchDirectories.length === 1) {
-        resultMessage += ` within ${searchDirectories[0]}`;
-      } else {
-        resultMessage += ` across ${searchDirectories.length} workspace directories`;
-      }
+      let llmContent = finalPaths.join('\n');
       if (ignoredCount > 0) {
-        resultMessage += ` (${ignoredCount} additional files were ignored)`;
+        llmContent += `\n\nNOTE: ${ignoredCount} additional files matched the pattern but were ignored by .gitignore or .geminiignore.`;
       }
-      resultMessage += `, sorted by modification time (newest first):\n${fileListDescription}`;
 
       return {
-        llmContent: resultMessage,
-        returnDisplay: `Found ${fileCount} matching file(s)`,
+        llmContent,
+        returnDisplay: `Found ${finalPaths.length} file${finalPaths.length === 1 ? '' : 's'}.`,
       };
     } catch (error) {
-      debugLogger.warn(`GlobLogic execute Error`, error);
-      const errorMessage = getErrorMessage(error);
-      const rawError = `Error during glob search operation: ${errorMessage}`;
+      const message = getErrorMessage(error);
+      debugLogger.debug('[DEBUG] [GlobTool] Unexpected error:', message);
       return {
-        llmContent: rawError,
-        returnDisplay: `Error: An unexpected error occurred.`,
+        llmContent: `Error during glob search: ${message}`,
+        returnDisplay: 'Error during search.',
         error: {
-          message: rawError,
-          type: ToolErrorType.GLOB_EXECUTION_ERROR,
+          message,
+          type: ToolErrorType.UNKNOWN,
         },
       };
     }
@@ -303,10 +288,11 @@ class GlobToolInvocation extends BaseToolInvocation<
 }
 
 /**
- * Implementation of the Glob tool logic
+ * Implementation of the Glob tool
  */
 export class GlobTool extends BaseDeclarativeTool<GlobToolParams, ToolResult> {
   static readonly Name = GLOB_TOOL_NAME;
+
   constructor(
     private config: Config,
     messageBus: MessageBus,
@@ -315,7 +301,7 @@ export class GlobTool extends BaseDeclarativeTool<GlobToolParams, ToolResult> {
       GlobTool.Name,
       GLOB_DISPLAY_NAME,
       GLOB_DEFINITION.base.description!,
-      Kind.Search,
+      Kind.Read,
       GLOB_DEFINITION.base.parametersJsonSchema,
       messageBus,
       true,
@@ -323,43 +309,22 @@ export class GlobTool extends BaseDeclarativeTool<GlobToolParams, ToolResult> {
     );
   }
 
-  /**
-   * Validates the parameters for the tool.
-   */
   protected override validateToolParamValues(
     params: GlobToolParams,
   ): string | null {
-    const searchDirAbsolute = path.resolve(
-      this.config.getTargetDir(),
-      params.dir_path || '.',
-    );
-
-    const validationError = this.config.validatePathAccess(
-      searchDirAbsolute,
-      'read',
-    );
-    if (validationError) {
-      return validationError;
+    if (params.pattern.trim() === '') {
+      return "The 'pattern' parameter must be non-empty.";
     }
 
-    const targetDir = searchDirAbsolute || this.config.getTargetDir();
-    try {
-      if (!fs.existsSync(targetDir)) {
-        return `Search path does not exist ${targetDir}`;
+    if (params.dir_path) {
+      const searchDir = path.resolve(
+        this.config.getTargetDir(),
+        params.dir_path,
+      );
+      const validationError = this.config.validatePathAccess(searchDir, 'read');
+      if (validationError) {
+        return validationError;
       }
-      if (!fs.statSync(targetDir).isDirectory()) {
-        return `Search path is not a directory: ${targetDir}`;
-      }
-    } catch (e: unknown) {
-      return `Error accessing search path: ${e}`;
-    }
-
-    if (
-      !params.pattern ||
-      typeof params.pattern !== 'string' ||
-      params.pattern.trim() === ''
-    ) {
-      return "The 'pattern' parameter cannot be empty.";
     }
 
     return null;

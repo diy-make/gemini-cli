@@ -7,17 +7,19 @@
 import type { MessageBus } from '../confirmation-bus/message-bus.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import type {
-  ToolCallConfirmationDetails,
-  ToolInvocation,
-  ToolResult,
+import {
+  BaseDeclarativeTool,
+  BaseToolInvocation,
+  Kind,
+  type ToolCallConfirmationDetails,
+  type ToolInvocation,
+  type ToolResult,
 } from './tools.js';
-import { BaseDeclarativeTool, BaseToolInvocation, Kind } from './tools.js';
 import { makeRelative, shortenPath } from '../utils/paths.js';
 import type { Config } from '../config/config.js';
 import { DEFAULT_FILE_FILTERING_OPTIONS } from '../config/constants.js';
 import { ToolErrorType } from './tool-error.js';
-import { LS_TOOL_NAME } from './tool-names.js';
+import { LS_TOOL_NAME, LS_DISPLAY_NAME } from './tool-names.js';
 import { debugLogger } from '../utils/debugLogger.js';
 import { LS_DEFINITION } from './definitions/coreTools.js';
 import { resolveToolDeclaration } from './definitions/resolver.js';
@@ -191,8 +193,6 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
     try {
       const stats = await fs.stat(resolvedDirPath);
       if (!stats) {
-        // fs.statSync throws on non-existence, so this check might be redundant
-        // but keeping for clarity. Error message adjusted.
         return this.errorResult(
           `Error: Directory not found or inaccessible: ${resolvedDirPath}`,
           `Directory not found or inaccessible.`,
@@ -209,7 +209,6 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
 
       const files = await fs.readdir(resolvedDirPath);
       if (files.length === 0) {
-        // Changed error message to be more neutral for LLM
         return {
           llmContent: `Directory ${resolvedDirPath} is empty.`,
           returnDisplay: `Directory is empty.`,
@@ -255,7 +254,6 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
             modifiedTime: stats.mtime,
           });
         } catch (error) {
-          // Log error internally but don't fail the whole listing
           debugLogger.debug(`Error accessing ${fullPath}: ${error}`);
         }
       }
@@ -267,35 +265,26 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
         return a.name.localeCompare(b.name);
       });
 
-      // Create formatted content for LLM
-      const directoryContent = entries
-        .map((entry) => {
-          if (entry.isDirectory) {
-            return `[DIR] ${entry.name}`;
-          }
-          return `${entry.name} (${entry.size} bytes)`;
+      let llmContent = entries
+        .map((e) => {
+          const typeChar = e.isDirectory ? '/' : '';
+          return `${e.name}${typeChar}`;
         })
         .join('\n');
 
-      let resultMessage = `Directory listing for ${resolvedDirPath}:\n${directoryContent}`;
       if (ignoredCount > 0) {
-        resultMessage += `\n\n(${ignoredCount} ignored)`;
-      }
-
-      let displayMessage = `Listed ${entries.length} item(s).`;
-      if (ignoredCount > 0) {
-        displayMessage += ` (${ignoredCount} ignored)`;
+        llmContent += `\n\nNOTE: ${ignoredCount} additional item${ignoredCount === 1 ? '' : 's'} in this directory were ignored by .gitignore or .geminiignore.`;
       }
 
       return {
-        llmContent: resultMessage,
-        returnDisplay: displayMessage,
+        llmContent,
+        returnDisplay: `Listed ${entries.length} item${entries.length === 1 ? '' : 's'}.`,
       };
     } catch (error) {
-      const errorMsg = `Error listing directory: ${error instanceof Error ? error.message : String(error)}`;
+      debugLogger.warn(`Error during LS execution: ${error}`);
       return this.errorResult(
-        errorMsg,
-        'Failed to list directory.',
+        `Error executing LS: ${error instanceof Error ? error.message : String(error)}`,
+        `Error executing listing.`,
         ToolErrorType.LS_EXECUTION_ERROR,
       );
     }
@@ -303,20 +292,20 @@ class LSToolInvocation extends BaseToolInvocation<LSToolParams, ToolResult> {
 }
 
 /**
- * Implementation of the LS tool logic
+ * Implementation of the LS tool
  */
 export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
   static readonly Name = LS_TOOL_NAME;
 
   constructor(
-    private config: Config,
+    private readonly config: Config,
     messageBus: MessageBus,
   ) {
     super(
       LSTool.Name,
-      'ReadFolder',
+      LS_DISPLAY_NAME,
       LS_DEFINITION.base.description!,
-      Kind.Search,
+      Kind.Read,
       LS_DEFINITION.base.parametersJsonSchema,
       messageBus,
       true,
@@ -324,19 +313,27 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
     );
   }
 
-  /**
-   * Validates the parameters for the tool
-   * @param params Parameters to validate
-   * @returns An error message string if invalid, null otherwise
-   */
   protected override validateToolParamValues(
     params: LSToolParams,
   ): string | null {
+    if (params.dir_path.trim() === '') {
+      return "The 'dir_path' parameter must be non-empty.";
+    }
+
     const resolvedPath = path.resolve(
       this.config.getTargetDir(),
       params.dir_path,
     );
-    return this.config.validatePathAccess(resolvedPath, 'read');
+
+    const validationError = this.config.validatePathAccess(
+      resolvedPath,
+      'read',
+    );
+    if (validationError) {
+      return validationError;
+    }
+
+    return null;
   }
 
   protected createInvocation(
@@ -348,7 +345,7 @@ export class LSTool extends BaseDeclarativeTool<LSToolParams, ToolResult> {
     return new LSToolInvocation(
       this.config,
       params,
-      messageBus ?? this.messageBus,
+      messageBus,
       _toolName,
       _toolDisplayName,
     );

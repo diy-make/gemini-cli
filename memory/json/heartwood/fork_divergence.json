@@ -6,9 +6,9 @@
   "description": "Codifies the unique architectural and legislative differences between the DIY-MAKE Sovereign Fork and the Google Gemini CLI baseline.",
   "differences": [
     {
-      "name": "Legislative Memory Transition",
-      "rule": "Decommissioned '.gemini/GEMINI.md' to prevent 'alien DNA injection.' Standardized on '.gemini/SOVEREIGN.md' for persistent agent instructions.",
-      "rationale": "Ensures that system-level memory is isolated from workspace-specific technical strikes and community-driven context drift."
+      "name": "Memory Framework Standardization",
+      "rule": "Total deprecation of '.gemini/' based memory (GEMINI.md/SOVEREIGN.md). Memory MUST be handled via the multi-repo framework (json/heartwood, json/wedo, py/substrate).",
+      "rationale": "Ensures substrate safety and prevents 'alien DNA injection' by isolating system-level instructions from ephemeral session state."
     },
     {
       "name": "The Metagit Feed (V8 Replay)",
