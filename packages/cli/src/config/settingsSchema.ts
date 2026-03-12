@@ -420,7 +420,7 @@ const SETTINGS_SCHEMA = {
         label: 'Theme',
         category: 'UI',
         requiresRestart: false,
-        default: undefined as string | undefined,
+        default: 'ANSI Light' as string | undefined,
         description:
           'The color theme for the UI. See the CLI themes guide for available options.',
         showInDialog: false,
