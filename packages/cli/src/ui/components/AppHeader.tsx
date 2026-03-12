@@ -24,22 +24,18 @@ interface AppHeaderProps {
   showDetails?: boolean;
 }
 
-const DEFAULT_ICON = `▝▜▄  
-  ▝▜▄
- ▗▟▀ 
-▝▀    `;
+const DEFAULT_ICON = ` ███╗   ███╗ █████╗ ██╗  ██╗███████╗    ██████╗ ██╗██╗   ██╗
+ ████╗ ████║██╔══██╗██║ ██╔╝██╔════╝    ██╔══██╗██║╚██╗ ██╔╝
+ ██╔████╔██║███████║█████╔╝ █████╗      ██║  ██║██║ ╚████╔╝ 
+ ██║╚██╔╝██║██╔══██║██╔═██╗ ██╔══╝      ██║  ██║██║  ╚██╔╝  
+ ██║ ╚═╝ ██║██║  ██║██║  ██╗███████╗    ██████╔╝██║   ██║   
+ ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝    ╚═════╝ ╚═╝   ╚═╝   `;
 
 /**
- * The default Apple Terminal.app adds significant line-height padding between
- * rows. This breaks Unicode block-drawing characters that rely on vertical
- * adjacency (like half-blocks). This version is perfectly symmetric vertically,
- * which makes the padding gaps look like an intentional "scanline" design
- * rather than a broken image.
+ * MAC_TERMINAL_ICON is kept identical to DEFAULT_ICON for the Sovereign Banner
+ * to ensure consistent branding across all environments.
  */
-const MAC_TERMINAL_ICON = `▝▜▄  
-  ▝▜▄
-  ▗▟▀
-▗▟▀  `;
+const MAC_TERMINAL_ICON = DEFAULT_ICON;
 
 export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
   const settings = useSettings();
@@ -71,7 +67,7 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
             <Box marginLeft={2} flexDirection="column">
               <Box>
                 <Text bold color={theme.text.primary}>
-                  Gemini CLI
+                  SOVEREIGN METAGIT INTERFACE | BOTANICAL AL 2026
                 </Text>
                 <Text color={theme.text.secondary}> v{version}</Text>
               </Box>
@@ -93,7 +89,7 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
             {/* Line 1: Gemini CLI vVersion [Updating] */}
             <Box>
               <Text bold color={theme.text.primary}>
-                Gemini CLI
+                SOVEREIGN METAGIT INTERFACE | BOTANICAL AL 2026
               </Text>
               <Text color={theme.text.secondary}> v{version}</Text>
               {updateInfo && (
