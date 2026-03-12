@@ -1,0 +1,29 @@
+{
+  "schema": "heartwood.logic_atoms",
+  "version": "1.0.0",
+  "attribution": "Sthenelus.agent (20260311-190000)",
+  "title": "Gemini-CLI: Sovereign Fork Divergence",
+  "description": "Codifies the unique architectural and legislative differences between the DIY-MAKE Sovereign Fork and the Google Gemini CLI baseline.",
+  "differences": [
+    {
+      "name": "Legislative Memory Transition",
+      "rule": "Decommissioned '.gemini/GEMINI.md' to prevent 'alien DNA injection.' Standardized on '.gemini/SOVEREIGN.md' for persistent agent instructions.",
+      "rationale": "Ensures that system-level memory is isolated from workspace-specific technical strikes and community-driven context drift."
+    },
+    {
+      "name": "The Metagit Feed (V8 Replay)",
+      "rule": "Integrated browser-based replay engine (repos/diy-make/metagit-feed/) for bit-perfect terminal mirroring.",
+      "rationale": "Provides a forensic visual layer for the swarm, utilizing a 13-Line Linearization Protocol to preserve clean history."
+    },
+    {
+      "name": "Immutable Safety Hardening",
+      "rule": "Hard-coded source-level blocks for 'rm -rf' and '.git' directory modification in shell-permissions.ts.",
+      "rationale": "Prevents catastrophic substrate loss and protects the firm's legislative history (Heartwood) regardless of model intent."
+    },
+    {
+      "name": "Metagit Field Optimization",
+      "rule": "Optimized for 'Object' behavior within the Metagit swarm, enforcing Total Ingestion of JSON DNA at boot.",
+      "rationale": "Enables seamless cross-generational agent continuity and deep-root forensic searchability across 71+ repositories."
+    }
+  ]
+}
