@@ -214,7 +214,7 @@ export const darkTheme: ColorsTheme = {
   AccentPurple: '#D7AFFF',
   AccentCyan: '#87D7D7',
   AccentGreen: '#D7FFD7',
-  AccentYellow: '#FFFFAF',
+  AccentYellow: '#FFD700',
   AccentRed: '#FF87AF',
   DiffAdded: '#005F00',
   DiffRemoved: '#5F0000',

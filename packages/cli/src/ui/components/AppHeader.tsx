@@ -14,7 +14,6 @@ import { Banner } from './Banner.js';
 import { useBanner } from '../hooks/useBanner.js';
 import { useTips } from '../hooks/useTips.js';
 import { theme } from '../semantic-colors.js';
-import { ThemedGradient } from './ThemedGradient.js';
 import { CliSpinner } from './CliSpinner.js';
 
 import { isAppleTerminal } from '@google/gemini-cli-core';
@@ -62,7 +61,7 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
             paddingLeft={2}
           >
             <Box flexShrink={0}>
-              <ThemedGradient>{ICON}</ThemedGradient>
+              <Text color={theme.status.warning}>{ICON}</Text>
             </Box>
             <Box marginLeft={2} flexDirection="column">
               <Box>
@@ -83,7 +82,7 @@ export const AppHeader = ({ version, showDetails = true }: AppHeaderProps) => {
       {showHeader && (
         <Box flexDirection="row" marginTop={1} marginBottom={1} paddingLeft={2}>
           <Box flexShrink={0}>
-            <ThemedGradient>{ICON}</ThemedGradient>
+            <Text color={theme.status.warning}>{ICON}</Text>
           </Box>
           <Box marginLeft={2} flexDirection="column">
             {/* Line 1: Gemini CLI vVersion [Updating] */}
