@@ -292,7 +292,14 @@ export const useShellCommandProcessor = (
         if (!command.endsWith(';') && !command.endsWith('&')) {
           command += ';';
         }
-        commandToExecute = `{ ${command} }; __code=$?; pwd > "${pwdFilePath}"; exit $__code`;
+        
+        // [SOV-08] Agentified Command Interception
+        // We route the command through the AI Shell Interceptor to support shorthands like !git.al
+        const interceptorPath = path.join(config.getProjectRoot() || '', 'py/substrate/ai_shell_interceptor.py');
+        const venvPython = path.join(config.getProjectRoot() || '', '.venv/bin/python3');
+        const wrappedCommand = `${venvPython} "${interceptorPath}" ${command}`;
+        
+        commandToExecute = `{ ${wrappedCommand} }; __code=$?; pwd > "${pwdFilePath}"; exit $__code`;
       }
 
       const executeCommand = async () => {
