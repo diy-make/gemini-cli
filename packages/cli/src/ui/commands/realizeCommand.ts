@@ -22,13 +22,14 @@ export const realizeCommand: SlashCommand = {
       description: 'Realize the Book of CLI (gemini-cli)',
       kind: CommandKind.BUILT_IN,
       autoExecute: true,
-      action: async (_context: CommandContext) => ({
+      action: async (_context: CommandContext) => {
+        return {
           type: 'submit_prompt',
-          content: [
-            {
-              text: 'SYSTEM MANDATE: Realize the Book of CLI by absorbing third_party/google_diy_make/gemini-cli_public/memory/ and mapping the CLI organization.',
-            },
-          ],
+          content: [{ text: 'SYSTEM MANDATE: Realize the Book of CLI by absorbing third_party/google_diy_make/memory/public/ and mapping the CLI organization.' }],
+        };
+      },
+    },
+
         }),
     },
     {
